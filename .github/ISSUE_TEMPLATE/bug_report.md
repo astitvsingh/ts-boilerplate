@@ -1,6 +1,6 @@
 ---
 name: "🐞 Bug Report"
-description: "Create a bug report issue to help us improve"
+about: "Create a bug report issue to help us improve"
 title: "`🐞[BUG]`: <title>"
 labels: ["🐞 Bug Report", "bug"]
 ---

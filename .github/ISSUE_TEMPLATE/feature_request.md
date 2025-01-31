@@ -1,6 +1,6 @@
 ---
 name: "✨ Feature Request"
-description: "Suggest an idea of a new feature for the project"
+about: "Suggest an idea of a new feature for the project"
 title: "`✨[FR]`: <title>"
 labels: ["✨ Feature Request", "🌟 Feature", "enhancement"]
 ---
