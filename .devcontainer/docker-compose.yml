@@ -1,0 +1,54 @@
+# -------------------------------------------------------------------------
+# Docker Compose File for Development Container
+# Purpose: Define services and configurations for the devcontainer environment.
+# Version: 3.9 (latest stable version supporting all current features)
+# -------------------------------------------------------------------------
+
+version: "3.9" # Specify the Docker Compose file format version.
+
+services:
+  devcontainer: # Service name for the development container.
+    # ---------------------------------------------------------------------
+    # Build Configuration
+    # Defines the context and Dockerfile for building the container image.
+    # ---------------------------------------------------------------------
+    build:
+      context: . # The build context is the current directory (./).
+      dockerfile: Dockerfile # Specify the Dockerfile to use for the build.
+
+    # ---------------------------------------------------------------------
+    # Volumes
+    # Mount directories from the host system into the container.
+    # Ensures that local files are accessible inside the container and vice versa.
+    # ---------------------------------------------------------------------
+    volumes:
+      - ..:/workspace:cached # Mount the parent directory (..) to /workspace inside the container with caching for improved performance.
+      - ~/.ssh:/home/developer/.ssh:ro # Mount the SSH keys folder from the host to the container (read-only).
+
+    # ---------------------------------------------------------------------
+    # Ports
+    # Maps ports from the container to the host for external access.
+    # ---------------------------------------------------------------------
+    ports:
+      - "3000:3000" # Expose port 3000 for the application (e.g., Node.js).
+      - "9229:9229" # Expose port 9229 for Node.js debugging.
+
+    # ---------------------------------------------------------------------
+    # Environment Variables
+    # Set environment variables inside the container.
+    # ---------------------------------------------------------------------
+    environment:
+      NODE_ENV: development # Set the environment to "development".
+
+    # ---------------------------------------------------------------------
+    # Command
+    # Specify the command to run when the container starts.
+    # This keeps the container running indefinitely, useful for interactive development.
+    # ---------------------------------------------------------------------
+    command: "/bin/bash -c 'while sleep 1000; do :; done'"
+
+    # ---------------------------------------------------------------------
+    # Container Name
+    # Assign a specific name to the container for easier identification.
+    # ---------------------------------------------------------------------
+    container_name: the-platform-devcontainer # Name the container for better clarity in `docker ps` output.

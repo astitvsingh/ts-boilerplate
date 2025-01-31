@@ -1,0 +1,248 @@
+#!/bin/sh
+
+# --------------------------------------------------------------------
+# Git Pre-Commit Hook
+# Purpose: Enforce quality checks before allowing a commit.
+# --------------------------------------------------------------------
+
+# Script Configuration Variables
+# --------------------------------
+
+# Maximum number of staged files allowed in a single commit.
+max_staged_files_count=3
+
+# Regular expression pattern to match valid commit types.
+type_regex='^\[(feat|fix|docs|style|refactor|test|chore) #[0-9]+\]'
+
+# Comma-separated list of valid commit types.
+valid_types='feat, fix, docs, style, refactor, test, chore'
+
+# Regular expression pattern to match valid commit scopes.
+scope_regex='\(.*\)'
+
+# Regular expression pattern to match valid commit summaries.
+summary_regex='\: .{1,50}$'
+
+# --------------------------------------------------------------------
+# Determine reference for comparison
+# This section determines the reference point for comparing changes.
+# --------------------------------------------------------------------
+
+# Display a message to indicate the reference determination process.
+echo "🔍 Determining reference for comparison..."
+
+# Check if the HEAD reference exists.
+# If it does, use it as the reference for comparison.
+if git rev-parse --verify HEAD >/dev/null 2>&1;
+then
+  # Set the 'against' variable to the HEAD reference.
+  against=HEAD
+  
+  # Display a success message indicating that the reference is set to HEAD.
+  echo "✔️ Reference set to HEAD."
+else
+  # If the HEAD reference does not exist (initial commit),
+  # create an empty tree object as the reference for comparison.
+  against=$(git hash-object -t tree /dev/null)
+  
+  # Display a success message indicating that the reference is set to an empty tree object.
+  echo "✔️ Initial commit detected. Reference set to an empty tree object."
+fi
+
+# --------------------------------------------------------------------
+# Check for non-ASCII filenames
+# This section checks for non-ASCII characters in staged filenames.
+# --------------------------------------------------------------------
+
+# Display a message to indicate the start of the non-ASCII filename check.
+echo "🔍 Checking for non-ASCII filenames..."
+
+# Retrieve the configuration value for allowing non-ASCII filenames.
+# This value is stored in the Git configuration under 'hooks.allownonascii'.
+allownonascii=$(git config --type=bool hooks.allownonascii)
+
+# Check for non-ASCII characters in staged filenames.
+# This is done by piping the output of 'git diff-index' to 'tr' and 'wc'.
+# The 'tr' command removes all ASCII characters, and 'wc' counts the remaining characters.
+# If the count is non-zero, it means there are non-ASCII characters in the filenames.
+if [ "$allownonascii" != "true" ] && test $(git diff-index --cached --name-only --diff-filter=A -z $against | LC_ALL=C tr -d '[ -~]\0' | wc -c) != 0;
+then
+  # Display an error message if non-ASCII filename is detected.
+  echo "❌ Error: Non-ASCII filename detected."
+  echo "ℹ️ Please rename the file to ensure cross-platform compatibility."
+  
+  # Exit the script with a non-zero status code to indicate failure.
+  exit 1
+else
+  # Display a success message if no non-ASCII filenames are detected.
+  echo "✔️ No non-ASCII filenames detected."
+fi
+
+# --------------------------------------------------------------------
+# Check for whitespace errors
+# This section checks for whitespace errors in staged files.
+# --------------------------------------------------------------------
+
+# # Display a message to indicate the start of the whitespace error check.
+# echo "🔍 Checking for whitespace errors..."
+
+# # Use 'git diff-index' to check for whitespace errors in staged files.
+# # The '--check' option tells Git to check for whitespace errors.
+# git diff-index --check --cached $against --
+
+# # Check the exit status of the previous command.
+# # If it's non-zero, it means there are whitespace errors.
+# if [ $? -ne 0 ];
+# then
+#   # Display an error message if whitespace error is detected.
+#   echo "❌ Commit rejected due to whitespace errors."
+  
+#   # Exit the script with a non-zero status code to indicate failure.
+#   exit 1
+# else
+#   # Display a success message if no whitespace errors are detected.
+#   echo "✔️ No whitespace errors detected."
+# fi
+
+# --------------------------------------------------------------------
+# Validate Staged Files Limit
+# This section checks if the number of staged files exceeds the allowed limit.
+# --------------------------------------------------------------------
+
+# Display a message to indicate the start of the staged files limit check.
+echo "🔍 Validating number of staged files..."
+
+# Use 'git diff' to get the list of staged files and count them using 'wc'.
+staged_files_count=$(git diff --cached --name-only | wc -l)
+
+# Check if the number of staged files exceeds the allowed limit.
+if [ "$staged_files_count" -gt "$max_staged_files_count" ];
+then
+  # Display an error message if the limit is exceeded.
+  echo "❌ Error: Too many files staged for commit."
+  echo "➡️ You can only commit up to $max_staged_files_count files at a time."
+  echo "➡️ Currently staged: $staged_files_count files"
+  
+  # Exit the script with a non-zero status code to indicate failure.
+  exit 1
+else
+  # Display a success message if the number of staged files is within the limit.
+  echo "✔️ Number of staged files $staged_files_count is within the allowed max limit of $max_staged_files_count."
+fi
+
+# --------------------------------------------------------------------
+# Check Commit Message Compliance
+# This section checks if the commit message complies with the required format.
+# --------------------------------------------------------------------
+
+# Display a message to indicate the start of the commit message compliance check.
+echo "🔍 Validating Commit Message Compliance..."
+
+# Get the path to the commit message file.
+commit_msg_file=$(git rev-parse --git-dir)/COMMIT_EDITMSG
+
+# Read the commit message from the file.
+commit_message=$(cat "$commit_msg_file")
+
+# Display the commit message for debugging purposes.
+echo "➡️ Debug: Commit message is: $commit_message"
+
+# --------------------------------------------------------------------
+# Ensure the commit message is not empty
+# This section checks if the commit message is empty.
+# --------------------------------------------------------------------
+# Display a message to indicate the start of the commit message compliance check.
+echo "🔍 Validating Empty Commit Message Check..."
+
+# Check if the commit message is empty.
+if [ -z "$commit_message" ];
+then
+  # Display an error message if the commit message is empty.
+  echo "❌ Error: Commit message cannot be empty."
+  echo "➡️ Please follow the strict format: [<type> #<issue-number>](<scope>): <short summary>"
+  echo "🔍 Example: [feat #123](auth): Add login functionality"
+  
+  # Exit the script with a non-zero status code to indicate failure.
+  exit 1
+else
+  # Display a success message if the commit message is not empty.
+  echo "✔️ Commit message is not empty."
+fi
+
+# --------------------------------------------------------------------
+# Ensure the commit message matches the required format
+# This section checks if the commit message contains a valid type.
+# --------------------------------------------------------------------
+echo "🔍 Validating commit type..."
+
+# Check if the commit message matches the type regex and extract the type.
+commit_type=$(echo "$commit_message" | grep -oE "$type_regex")
+echo "➡️ Debug: Commit Type is: $commit_type"
+
+# Check if the commit message matches the type regex.
+if [ -z "$commit_type" ];
+then
+  # Display an error message if the type is invalid or missing.
+  echo "❌ Error: Invalid or missing type in commit message."
+  echo "➡️ Type should be one of: $valid_types"
+  echo "➡️ Format: [<type> #<issue-number>]"
+  echo "➡️ Example: [feat #123](auth): Add login functionality"
+  echo "➡️ Example: [docs #13](README): Add README file"
+  exit 1
+else
+  # Display a success message if the type is valid.
+  echo "✔️ Commit type '$commit_type' is valid."
+fi
+
+# --------------------------------------------------------------------
+# Ensure the commit message contains a valid scope
+# This section checks if the commit message contains a scope.
+# --------------------------------------------------------------------
+echo "🔍 Validating commit scope..."
+
+# Check if the commit message matches the type regex and extract the type.
+commit_scope=$(echo "$commit_message" | grep -oE "$scope_regex")
+echo "➡️ Debug: Commit Scope is: $commit_scope"
+
+# Check if the commit message matches the scope regex.
+if [ -z "$commit_scope" ];
+then
+  # Display an error message if the scope is missing or invalid.
+  echo "❌ Error: Missing or invalid scope in commit message."
+  echo "➡️ Scope should specify the module, feature, or file affected."
+  echo "➡️ Format: (<scope>)"
+  echo "➡️ Example: [feat #123](auth): Add login functionality"
+  exit 1
+else
+  # Display a success message if the scope is valid.
+  echo "✔️ Commit scope '$commit_scope' is valid."
+fi
+
+# --------------------------------------------------------------------
+# Ensure the commit message contains a valid summary
+# This section checks if the commit message contains a summary.
+# --------------------------------------------------------------------
+echo "🔍 Validating commit summary..."
+
+# Check if the commit message matches the summary regex.
+if ! echo "$commit_message" | grep -Eq "$summary_regex";
+then
+  # Display an error message if the summary is missing or exceeds the allowed length.
+  echo " Error: Commit summary is missing or exceeds the allowed length."
+  echo "➡️ Summary must be between 1 and 50 characters."
+  echo "➡️ Example: [feat #123](auth): Add login functionality"
+  exit 1
+else
+  # Display a success message if the summary is valid.
+  echo "✔️ Commit summary length is valid."
+fi
+
+# Display a final success message if all checks pass.
+echo "✔️ Commit message validation passed!"
+
+# --------------------------------------------------------------------
+# Final Success Message
+# --------------------------------------------------------------------
+
+echo "🎉 All checks passed! Proceeding with the commit."
+exit 0

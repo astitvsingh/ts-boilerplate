@@ -1,0 +1,138 @@
+{
+  "name": "The Platform DevContainer",
+  "dockerComposeFile": ["docker-compose.yml"],
+  "service": "devcontainer",
+  "workspaceFolder": "/workspace",
+
+  // ---------------------------------------------------------------------------
+  // Tool-Specific Customizations
+  // Configures custom settings, extensions, and behaviors for specific tools.
+  // ---------------------------------------------------------------------------
+  "customizations": {
+    // -------------------------------------------------------------------------
+    // VS Code-Specific Customizations
+    // -------------------------------------------------------------------------
+    "vscode": {
+      // -----------------------------------------------------------------------
+      // Extensions
+      // List of recommended extensions to install automatically in the devcontainer.
+      // These extensions enhance the development workflow by providing essential
+      // tools and features tailored to the project's requirements.
+      // -----------------------------------------------------------------------
+      "extensions": [
+        "ultram4rine.vscode-choosealicense",
+        "bierner.emojisense", // Provides emoji suggestions and auto-completion in text and code.
+        "akross.attributes-collapse", // Adds functionality for collapsing attributes in HTML and XML.
+        "lukegeneva.auto-collapse-explorer", // Automatically collapses the file explorer for a cleaner workspace.
+        "allergan-bt.auto-collapse-blocks", // Collapses code blocks for better readability and navigation.
+        "dart-code.dart-code", // Dart programming language support for Flutter development.
+        "ms-vscode-remote.remote-containers", // Enables development within Docker containers.
+        "ms-azuretools.vscode-docker", // Docker extension for managing and deploying containerized applications.
+        "dsznajder.es7-react-js-snippets", // Snippets for React, Redux, and GraphQL to speed up development.
+        "dbaeumer.vscode-eslint", // Integrates ESLint for JavaScript/TypeScript linting.
+        "csholmq.excel-to-markdown-table", // Converts Excel data to Markdown tables for documentation.
+        "dart-code.flutter", // Flutter development tools for Dart.
+        "donjayamanne.githistory", // Provides a visual history of Git repositories.
+        "github.vscode-github-actions", // Adds GitHub Actions support for workflows and CI/CD.
+        "github.vscode-pull-request-github", // GitHub integration for managing pull requests and issues.
+        "eamodio.gitlens", // Enhances Git capabilities in VS Code with powerful visualization tools.
+        "ms-python.isort", // Automatically sorts Python imports for consistency.
+        "ms-toolsai.jupyter", // Jupyter Notebook integration for running and editing notebooks.
+        "ms-toolsai.vscode-jupyter-cell-tags", // Adds cell tagging support to Jupyter notebooks.
+        "ms-toolsai.jupyter-keymap", // Provides keyboard shortcuts for Jupyter notebooks.
+        "ms-toolsai.jupyter-renderers", // Enhanced data rendering support for Jupyter notebooks.
+        "ms-toolsai.vscode-jupyter-slideshow", // Converts Jupyter notebooks into presentations.
+        "ms-kubernetes-tools.vscode-kubernetes-tools", // Kubernetes extension for managing clusters.
+        "yzhang.markdown-all-in-one",
+        "bierner.markdown-checkbox", // Adds checkbox support for Markdown documents.
+        "bierner.markdown-emoji", // Enables emojis in Markdown files.
+        "bat67.markdown-extension-pack", // A curated extension pack for Markdown editing.
+        "telesoho.vscode-markdown-paste-image", // Easily paste images into Markdown documents.
+        "yzane.markdown-pdf", // Converts Markdown documents to PDF files.
+        "shd101wyy.markdown-preview-enhanced", // Enhanced Markdown preview with additional features.
+        "bierner.markdown-preview-github-styles", // GitHub-style preview for Markdown files.
+        "mdickin.markdown-shortcuts", // Keyboard shortcuts for common Markdown tasks.
+        "darkriszty.markdown-table-prettify", // Formats Markdown tables for better readability.
+        "goessner.mdmath", // Adds LaTeX math support to Markdown documents.
+        "davidanson.vscode-markdownlint", // Lints Markdown files for style and syntax errors.
+        "christian-kohler.npm-intellisense", // Provides autocompletion for npm modules in code.
+        "ionutvmi.path-autocomplete", // Path auto-completion for faster file navigation.
+        "esbenp.prettier-vscode", // Prettier code formatter for consistent code styling.
+        "willumz.generic-pseudocode", // Syntax highlighting and support for pseudocode.
+        "ms-python.vscode-pylance", // Provides type checking and IntelliSense for Python.
+        "ms-python.python",
+        "ms-python.debugpy", // Python debugger support for efficient debugging workflows.
+        "mechatroner.rainbow-csv", // Highlights CSV files with column-based color coding.
+        "msjsdiag.vscode-react-native", // React Native development tools for mobile applications.
+        "juanblanco.solidity", // Solidity language support for Ethereum smart contract development.
+        "beaugunderson.solidity-extended", // Extended support for Solidity with additional features.
+        "ms-vscode-remote.remote-wsl", // Enables development within Windows Subsystem for Linux (WSL).
+        "dotjoshjohnson.xml", // XML tools for formatting and editing.
+        "redhat.vscode-yaml" // YAML language support with validation and schema suggestions.
+      ],
+      // -----------------------------------------------------------------------
+      // Workspace Settings
+      // Configure default settings for the workspace opened in the devcontainer.
+      // -----------------------------------------------------------------------
+      "settings": {
+        // ---------------------------------------------------------------------
+        // Terminal Settings
+        // ---------------------------------------------------------------------
+        "terminal.integrated.defaultProfile.windows": "Git Bash", // Use Git Bash as the default terminal on Windows for better compatibility with shell scripts.
+        "terminal.integrated.defaultProfile.linux": "bash", // Set Bash as the default terminal on Linux for a consistent shell environment.
+
+        // ---------------------------------------------------------------------
+        // Git Settings
+        // ---------------------------------------------------------------------
+        "git.autofetch": true, // Automatically fetch changes from remote repositories periodically.
+        "git.confirmSync": false, // Disable the sync confirmation dialog for a smoother workflow.
+        "git.openRepositoryInParentFolders": "always", // Automatically open repositories in parent folders.
+        "git.enableSmartCommit": true, // Enable committing without entering a commit message when only staged files exist.
+
+        // ---------------------------------------------------------------------
+        // Code Formatting
+        // ---------------------------------------------------------------------
+        "editor.defaultFormatter": "esbenp.prettier-vscode", // Set Prettier as the default code formatter for all supported file types.
+        "editor.formatOnSave": true, // Automatically format files on save for consistent code style.
+        "editor.formatOnType": true, // Format code as you type for better real-time corrections.
+        "editor.formatOnPaste": true, // Automatically format pasted code to match project standards.
+        "css.format.braceStyle": "expand", // Expand braces to new lines in CSS for readability.
+        "less.format.braceStyle": "expand", // Expand braces to new lines in LESS files.
+        "scss.format.braceStyle": "expand", // Expand braces to new lines in SCSS files.
+        "css.format.spaceAroundSelectorSeparator": true, // Add spaces around CSS selector separators for readability.
+        "css.format.maxPreserveNewLines": 2, // Limit CSS preserved newlines to a maximum of 2 for clean formatting.
+
+        // ---------------------------------------------------------------------
+        // Notebooks (e.g., Jupyter) Settings
+        // ---------------------------------------------------------------------
+        "notebook.formatOnCellExecution": true, // Automatically format notebook cells after execution.
+        "notebook.formatOnSave.enabled": true, // Enable notebook formatting on save for consistent styling.
+
+        // ---------------------------------------------------------------------
+        // JavaScript and TypeScript Settings
+        // ---------------------------------------------------------------------
+        "javascript.updateImportsOnFileMove.enabled": "always", // Automatically update imports when JavaScript files are moved or renamed.
+        "typescript.updateImportsOnFileMove.enabled": "always", // Automatically update imports when TypeScript files are moved or renamed.
+
+        // ---------------------------------------------------------------------
+        // Files and Optimization
+        // ---------------------------------------------------------------------
+        "files.autoSave": "afterDelay", // Automatically save files after a delay to prevent data loss.
+        "editor.largeFileOptimizations": false // Disable optimizations for large files to avoid reduced performance during file editing.
+      }
+    }
+  },
+  // ---------------------------------------------------------------------------
+  // Post-Creation Command
+  // Specify any commands to run after the container is created.
+  // Uncomment and update if needed.
+  // ---------------------------------------------------------------------------
+  // "postCreateCommand": "npm install", // Example: Automatically install npm dependencies.
+
+  // ---------------------------------------------------------------------------
+  // Remote User Configuration
+  // Define the default user for executing commands within the container.
+  // Helps in ensuring proper permissions and secure development.
+  // ---------------------------------------------------------------------------
+  "remoteUser": "developer" // Use the non-root `developer` user created in the Dockerfile.
+}

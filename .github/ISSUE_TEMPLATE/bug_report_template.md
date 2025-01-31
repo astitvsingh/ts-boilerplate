@@ -1,10 +1,28 @@
 ---
 name: "🐞 Bug Report"
-description: "Create a bug issue report to help us improve"
-about: "Create a bug issue report to help us improve"
-title: "🐞[BUG]: <title>"
-labels: ["bug"]
+description: "Create a bug report issue to help us improve"
+title: "`🐞[BUG]`: <title>"
+labels: ["🐞 Bug Report", "bug"]
 ---
+
+## `🐞[BUG]`: `<title>`
+
+- [ ] **_I have checked and confirmed the uniqueness of this feature request. No duplicate issue was found_**
+
+---
+
+### 🗂️ Table Of Contents
+
+- [`🐞[BUG]`: `<title>`](#bug-title)
+  - [🗂️ Table Of Contents](#️-table-of-contents)
+- [**Description**](#description)
+- [**To Reproduce**](#to-reproduce)
+- [**Expected behavior**](#expected-behavior)
+- [**Environment**](#environment)
+  - [**Desktop (please complete the following information):**](#desktop-please-complete-the-following-information)
+  - [**Smartphone (please complete the following information):**](#smartphone-please-complete-the-following-information)
+- [**Additional context**](#additional-context)
+- [**Screenshots** (if applicable)](#screenshots-if-applicable)
 
 ## **Description**
 
