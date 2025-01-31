@@ -9,10 +9,15 @@
   "types": "dist/esm/index.d.ts",
   "module": "dist/esm/index.js",
   "scripts": {
-    "build": "tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
-    "test": "jest --coverage",
-    "docify": "typedoc --entryPointStrategy expand src --out docs",
-    "prepublishOnly": "npm run build && npm run test && npm run docify"
+    "build": "npx concurrently 'npm run build:cjs' 'npm run build:esm'",
+    "build:cjs": "npx tsc -p tsconfig.cjs.json",
+    "build:esm": "npx tsc -p tsconfig.esm.json",
+    "test": "npm run test:jest",
+    "test:jest": "npx jest --coverage",
+    "docify": "npm run docify:typedoc",
+    "docify:typedoc": "npx typedoc --entryPointStrategy expand src --out docs",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build && npm run test && npm run docify"
   },
   "repository": {
     "type": "git",
@@ -38,6 +43,7 @@
   },
   "files": [
     "dist",
+    "tests",
     "README.md"
   ],
   "dependencies": {
