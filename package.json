@@ -1,14 +1,21 @@
 {
-  "name": "nodejs-project-template",
+  "name": "ts-boilerplate",
   "version": "0.1.0-alpha",
   "description": "A comprehensive TypeScript NodeJs Boilerplate",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/esm/index.d.ts",
-  "type": "module",
-  "directories": {
-    "doc": "docs"
+  "keywords": [
+    "typescript"
+  ],
+  "homepage": "https://github.com/[YOUR_GITHUB_USERNAME]/[YOUR_GITHUB_REPO_NAME]#readme",
+  "bugs": {
+    "url": "https://github.com/[YOUR_GITHUB_USERNAME]/[YOUR_GITHUB_REPO_NAME]/issues"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/[YOUR_GITHUB_USERNAME]/[YOUR_GITHUB_REPO_NAME].git"
+  },
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "[YOUR_NAME] <https://github.com/[YOUR_GITHUB_USERNAME]>",
+  "type": "module",
   "exports": {
     ".": {
       "require": "./dist/cjs/index.js",
@@ -16,25 +23,22 @@
       "types": "./dist/esm/index.d.ts"
     }
   },
+  "main": "dist/cjs/index.js",
+  "types": "dist/esm/index.d.ts",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
     "test": "jest --coverage",
     "docify": "typedoc --entryPointStrategy expand src --out docs",
     "prepublishOnly": "npm run build && npm run test && npm run docify"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/[YOUR_GITHUB_USERNAME]/[YOUR_GITHUB_REPO_NAME].git"
-  },
-  "keywords": [
-    "typescript"
-  ],
-  "author": "[YOUR_NAME] <https://github.com/[YOUR_GITHUB_USERNAME]>",
-  "license": "SEE LICENSE IN LICENSE",
-  "bugs": {
-    "url": "https://github.com/[YOUR_GITHUB_USERNAME]/[YOUR_GITHUB_REPO_NAME]/issues"
-  },
-  "homepage": "https://github.com/[YOUR_GITHUB_USERNAME]/[YOUR_GITHUB_REPO_NAME]#readme",
   "devDependencies": {
     "@types/events": "^3.0.3",
     "@types/jest": "^29.5.14",
@@ -45,8 +49,5 @@
     "typedoc": "^0.26.10",
     "typescript": "^5.6.3"
   },
-  "files": [
-    "dist",
-    "README.md"
-  ]
+  "module": "dist/esm/index.js"
 }

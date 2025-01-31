@@ -17,7 +17,7 @@ set -e
 # Variables
 TITLE_TAG="✨[FR]:"
 TITLE_SUMMARY="Setup Auth Micro-Service"
-BODY_FILE="$(dirname "$0")/../feature-request-body.md"
+BODY_FILE="$(dirname "$0")/../fr-body.md"
 LABELS="✨ Feature Request,🌟 Feature,enhancement"
 ASSIGNEE="astitvsingh"
 
