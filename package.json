@@ -2,20 +2,29 @@
   "name": "ts-boilerplate",
   "version": "0.1.0-alpha",
   "description": "A comprehensive TypeScript NodeJs Boilerplate",
-  "keywords": [
-    "typescript"
-  ],
-  "homepage": "https://github.com/[YOUR_GITHUB_USERNAME]/[YOUR_GITHUB_REPO_NAME]#readme",
-  "bugs": {
-    "url": "https://github.com/[YOUR_GITHUB_USERNAME]/[YOUR_GITHUB_REPO_NAME]/issues"
+  "license": "SEE LICENSE IN LICENSE",
+  "author": "[YOUR_NAME] <https://github.com/[YOUR_GITHUB_USERNAME]>",
+  "main": "dist/cjs/index.js",
+  "type": "module",
+  "types": "dist/esm/index.d.ts",
+  "module": "dist/esm/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
+    "test": "jest --coverage",
+    "docify": "typedoc --entryPointStrategy expand src --out docs",
+    "prepublishOnly": "npm run build && npm run test && npm run docify"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/[YOUR_GITHUB_USERNAME]/[YOUR_GITHUB_REPO_NAME].git"
   },
-  "license": "SEE LICENSE IN LICENSE",
-  "author": "[YOUR_NAME] <https://github.com/[YOUR_GITHUB_USERNAME]>",
-  "type": "module",
+  "homepage": "https://github.com/[YOUR_GITHUB_USERNAME]/[YOUR_GITHUB_REPO_NAME]#readme",
+  "bugs": {
+    "url": "https://github.com/[YOUR_GITHUB_USERNAME]/[YOUR_GITHUB_REPO_NAME]/issues"
+  },
+  "keywords": [
+    "typescript"
+  ],
   "exports": {
     ".": {
       "require": "./dist/cjs/index.js",
@@ -23,8 +32,6 @@
       "types": "./dist/esm/index.d.ts"
     }
   },
-  "main": "dist/cjs/index.js",
-  "types": "dist/esm/index.d.ts",
   "directories": {
     "doc": "docs",
     "test": "tests"
@@ -33,11 +40,8 @@
     "dist",
     "README.md"
   ],
-  "scripts": {
-    "build": "tsc -p tsconfig.cjs.json && tsc -p tsconfig.esm.json",
-    "test": "jest --coverage",
-    "docify": "typedoc --entryPointStrategy expand src --out docs",
-    "prepublishOnly": "npm run build && npm run test && npm run docify"
+  "dependencies": {
+    "dotenv": "^16.4.7"
   },
   "devDependencies": {
     "@types/events": "^3.0.3",
@@ -48,6 +52,5 @@
     "ts-node": "^10.9.2",
     "typedoc": "^0.26.10",
     "typescript": "^5.6.3"
-  },
-  "module": "dist/esm/index.js"
+  }
 }
