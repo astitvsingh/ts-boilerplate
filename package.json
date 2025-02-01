@@ -10,13 +10,17 @@
   "module": "dist/esm/index.js",
   "scripts": {
     "build": "npx concurrently 'npm run build:cjs' 'npm run build:esm'",
-    "build:cjs": "npx tsc -p tsconfig.cjs.json",
-    "build:esm": "npx tsc -p tsconfig.esm.json",
+    "build:cjs": "npx tsc -p config/tsconfig.cjs.json",
+    "build:esm": "npx tsc -p config/tsconfig.esm.json",
+    "dev": "ts-node --project config/tsconfig.json src/index.ts",
     "test": "npm run test:jest",
-    "test:jest": "npx jest --coverage",
+    "test:jest": "npx jest --config=config/jest.config.js --coverage",
     "docify": "npm run docify:typedoc",
     "docify:typedoc": "npx typedoc --entryPointStrategy expand src --out docs",
-    "clean": "rm -rf dist",
+    "clean": "rimraf dist",
+    "docker:build": "docker build -t ts-boilerplate -f config/Dockerfile .",
+    "docker:up": "docker-compose -f config/docker-compose.yml up -d",
+    "docker:down": "docker-compose -f config/docker-compose.yml down",
     "prepublishOnly": "npm run clean && npm run build && npm run test && npm run docify"
   },
   "repository": {
@@ -57,6 +61,8 @@
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typedoc": "^0.26.10",
-    "typescript": "^5.6.3"
+    "typescript": "^5.6.3",
+    "rimraf": "^5.0.0",
+    "concurrently": "^8.2.2"
   }
 }
