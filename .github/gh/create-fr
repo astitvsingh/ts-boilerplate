@@ -4,7 +4,7 @@
 # Automates the creation of a GitHub feature request issue and sets up a feature branch using git flow.
 #
 # Run this script with:
-# bash ./.github/scripts/create-fr
+# bash ./.github/gh/create-fr
 #
 # Prerequisites:
 # - GitHub CLI (`gh`) is authenticated.
@@ -17,7 +17,7 @@ set -e
 # Variables
 TITLE_TAG="✨[FR]:"
 TITLE_SUMMARY="Setup Auth Micro-Service"
-BODY_FILE="$(dirname "$0")/../fr-body.md"
+BODY_FILE="$(dirname "$0")/../FR_BODY.md"
 LABELS="✨ Feature Request,🌟 Feature,enhancement"
 ASSIGNEE="astitvsingh"
 

@@ -4,7 +4,7 @@
 # This script sets up GitHub CLI (`gh`) with full scope access for a repository.
 #
 # Run this script with:
-# bash ./.github/cli/setup
+# bash ./.github/gh/setup
 #
 # Prerequisites:
 # - Ensure GitHub CLI (`gh`) is installed on your system.
@@ -14,14 +14,15 @@
 set -e
 
 # Authenticate GitHub CLI with full scope access
-echo -e "\n🔐 Authenticating GitHub CLI with full scope access...\n"
+echo -e "\n🔐  Authenticating GitHub CLI with full scope access...\n"
 
-if gh auth login --scopes "repo, workflow, read:packages, write:packages, delete:packages, admin:org, gist, notifications, user, read:org, read:public_key, write:public_key, read:gpg_key, write:gpg_key, codespace"; then
+if gh auth login --scopes "repo, workflow, read:packages, write:packages, delete:packages, admin:org, gist, notifications, user, read:org, read:public_key, write:public_key, read:gpg_key, write:gpg_key, codespace";
+then
   # Confirm authentication status
-  echo -e "\n✅ GitHub CLI authentication successful. Current status:\n"
+  echo -e "\n✅  GitHub CLI authentication successful. Current status:\n"
   gh auth status
 else
   # Handle authentication failure
-  echo -e "\n❌ GitHub CLI authentication failed. Please try again.\n"
+  echo -e "\n❌  GitHub CLI authentication failed. Please try again.\n"
   exit 1
 fi
