@@ -1,14 +1,14 @@
-# Project Structure
+# Repository Structure
 
-This document provides a comprehensive overview of the directory structure for the `nodejs-project-template` repository. It outlines the purpose and organization of each directory and file, ensuring a clear understanding of where to find various components of the project.
+This document provides a comprehensive overview of the directory structure for the `ts-boilerplate` repository. It outlines the purpose and organization of each directory and file, ensuring a clear understanding of where to find various components of the project.
 
-## Table of Contents
+## 🗂️ Table Of Contents
 
-- [Project Structure](#project-structure)
-  - [Table of Contents](#table-of-contents)
-  - [./ Directory Layout](#-directory-layout)
+- [Repository Structure](#repository-structure)
+  - [🗂️ Table Of Contents](#️-table-of-contents)
+  - [Repository Layout](#repository-layout)
 
-## ./ Directory Layout
+## Repository Layout
 
 ```bash
 ts-boilerplate/
@@ -49,10 +49,9 @@ ts-boilerplate/
 │   │   ├── pull_request.md
 │   ├── workflows/                   # GitHub Actions workflows
 │   ├── gh/                          # GitHub CLI scripts
-│   │   ├── setup
-│   ├── scripts/                      # Additional scripts
 │   │   ├── create-fr
-│   ├── fr-body.md
+│   │   ├── setup
+│   ├── FR_BODY.md
 │
 ├── .vcs/                            # Version Control System custom hooks
 │   ├── hooks/
@@ -78,7 +77,7 @@ ts-boilerplate/
 ├── manuals/                         # Project manuals
 │   ├── CHANGELOG.md
 │   ├── CONTRIBUTING.md
-│   ├── PROJECT_STRUCTURE.md
+│   ├── REPO_STRUCTURE.md
 │
 ├── src/                             # Source code
 │   ├── enums/                       # Enum definitions
@@ -98,13 +97,16 @@ ts-boilerplate/
 │   │   ├── index.test.ts
 │   ├── index.test.ts
 │
-├── .gitignore                        # Ignore files
-├── jest.config.js                    # Jest configuration
-├── LICENSE                           # License file
-├── package.json                      # NPM dependencies
-├── package-lock.json                  # NPM lock file
-├── README.md                          # Project README
-├── tsconfig.json                      # TypeScript configuration
+├── .dockerignore                       # Docker ignore files
+├── .gitignore                          # Git ignore files
+├── docker-compose.yml                   # Docker Compose file
+├── Dockerfile                          # Docker build file
+├── jest.config.js                      # Jest configuration
+├── LICENSE                             # License file
+├── package-lock.json                   # NPM lock file
+├── package.json                        # NPM dependencies
+├── README.md                           # Project README
 ├── tsconfig.cjs.json                   # CommonJS-specific TS config
 ├── tsconfig.esm.json                   # ESM-specific TS config
+├── tsconfig.json                       # TypeScript configuration
 ```
