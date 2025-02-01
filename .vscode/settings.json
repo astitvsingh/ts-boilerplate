@@ -23,8 +23,8 @@
   "files.exclude": {
     "**/.git": false
   },
-  "licenser.author": "Astitv Singh <https://github.com/astitvsingh>",
-  "licenser.license": "Choose from list",
+  "licenser.author": "© Astitv Singh <https://github.com/astitvsingh>",
+  "licenser.license": "MIT",
   "licenser.useSPDXLicenseFormat": true,
   "redhat.telemetry.enabled": false,
   "license.author": "Astitv Singh <https://github.com/astitvsingh>",
