@@ -1,3 +1,36 @@
 {
-  "license.author": "Astitv Singh <https://github.com/astitvsingh>"
+  "terminal.integrated.defaultProfile.windows": "Git Bash",
+  "git.autofetch": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "notebook.formatOnCellExecution": true,
+  "notebook.formatOnSave.enabled": true,
+  "css.format.braceStyle": "expand",
+  "editor.formatOnPaste": true,
+  "less.format.braceStyle": "expand",
+  "scss.format.braceStyle": "expand",
+  "css.format.spaceAroundSelectorSeparator": true,
+  "css.format.maxPreserveNewLines": 2,
+  "git.confirmSync": false,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "editor.largeFileOptimizations": false,
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "git.openRepositoryInParentFolders": "always",
+  "git.enableSmartCommit": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "files.autoSave": "afterDelay",
+  "files.exclude": {
+    "**/.git": false
+  },
+  "licenser.author": "Astitv Singh <https://github.com/astitvsingh>",
+  "licenser.license": "Choose from list",
+  "licenser.useSPDXLicenseFormat": true,
+  "redhat.telemetry.enabled": false,
+  "license.author": "Astitv Singh <https://github.com/astitvsingh>",
+  "vs-kubernetes": {
+    "vscode-kubernetes.helm-path-linux": "/home/developer/.local/state/vs-kubernetes/tools/helm/linux-amd64/helm",
+    "vscode-kubernetes.kubectl-path-linux": "/home/developer/.local/state/vs-kubernetes/tools/kubectl/kubectl",
+    "vscode-kubernetes.minikube-path-linux": "/home/developer/.local/state/vs-kubernetes/tools/minikube/linux-amd64/minikube"
+  }
 }
