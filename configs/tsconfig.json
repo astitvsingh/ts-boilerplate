@@ -17,6 +17,6 @@
   },
 
   // Specifies which files to include and exclude during the compilation
-  "include": ["src/**/*"], // Includes all TypeScript files in the 'src' directory for compilation
-  "exclude": ["node_modules", "dist"] // Excludes 'node_modules' and 'dist' directories from the compilation process (we don't want to compile third-party dependencies or compiled files)
+  "include": ["../src/**/*"], // Includes all TypeScript files in the 'src' directory for compilation
+  "exclude": ["../node_modules", "../dist"] // Excludes 'node_modules' and 'dist' directories from the compilation process (we don't want to compile third-party dependencies or compiled files)
 }

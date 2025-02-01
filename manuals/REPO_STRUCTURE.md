@@ -60,6 +60,14 @@ ts-boilerplate/
 ├── .vscode/                          # VS Code settings
 │   ├── settings.json
 │
+├── configs/                          # VS Code settings
+│   ├── docker-compose.yml            # Docker Compose file
+│   ├── Dockerfile                    # Docker build file
+│   ├── jest.config.js                # Jest configuration
+│   ├── tsconfig.cjs.json             # CommonJS-specific TS config
+│   ├── tsconfig.esm.json             # ESM-specific TS config
+│   ├── tsconfig.json                 # TypeScript configuration
+│
 ├── docs/                             # Generated Documentation Files
 │   ├── .nojekyll
 │   ├── index.html
@@ -104,14 +112,8 @@ ts-boilerplate/
 │
 ├── .dockerignore                     # Docker ignore files
 ├── .gitignore                        # Git ignore files
-├── docker-compose.yml                # Docker Compose file
-├── Dockerfile                        # Docker build file
-├── jest.config.js                    # Jest configuration
 ├── LICENSE                           # License file
 ├── package-lock.json                 # NPM lock file
 ├── package.json                      # NPM dependencies
 ├── README.md                         # Project README
-├── tsconfig.cjs.json                 # CommonJS-specific TS config
-├── tsconfig.esm.json                 # ESM-specific TS config
-├── tsconfig.json                     # TypeScript configuration
 ```
