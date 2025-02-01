@@ -12,24 +12,24 @@ This document provides a comprehensive overview of the directory structure for t
 
 ```bash
 ts-boilerplate/
-├── .devcontainer/                  # DevContainer setup
+├── .devcontainer/                    # DevContainer setup
 │   ├── devcontainer.json
 │   ├── docker-compose.yml
 │   ├── Dockerfile
 │
-├── .envs/                           # Environment variable examples
+├── .envs/                            # Environment variable examples
 │   ├── .env.development.local.example
 │   ├── .env.example
 │   ├── .env.local.example
 │   ├── .env.production.local.example
 │   ├── .env.test.local.example
 │
-├── .git/                            # Git metadata
-│   ├── hooks/                       # Git hooks
-│   ├── info/                        # Git info
-│   ├── logs/                        # Commit logs
-│   ├── objects/                     # Git objects
-│   ├── refs/                        # Branch references
+├── .git/                             # Git metadata
+│   ├── hooks/                        # Git hooks
+│   ├── info/                         # Git info
+│   ├── logs/                         # Commit logs
+│   ├── objects/                      # Git objects
+│   ├── refs/                         # Branch references
 │   ├── COMMIT_EDITMSG
 │   ├── config
 │   ├── description
@@ -53,14 +53,14 @@ ts-boilerplate/
 │   │   ├── setup
 │   ├── FR_BODY.md
 │
-├── .vcs/                            # Version Control System custom hooks
+├── .vcs/                             # Version Control System custom hooks
 │   ├── hooks/
 │   │   ├── pre-commit.sample
 │
-├── .vscode/                         # VS Code settings
+├── .vscode/                          # VS Code settings
 │   ├── settings.json
 │
-├── docs/                            # Documentation
+├── docs/                             # Generated Documentation Files
 │   ├── .nojekyll
 │   ├── index.html
 │   ├── modules.html
@@ -71,24 +71,29 @@ ts-boilerplate/
 │   ├── media/
 │   │   ├── CONTRIBUTING.md
 │
-├── documents/                       # Additional documents
+├── documents/                        # Additional documents
 │   ├── README
 │
-├── manuals/                         # Project manuals
+├── manuals/                          # Project manuals
 │   ├── CHANGELOG.md
 │   ├── CONTRIBUTING.md
 │   ├── REPO_STRUCTURE.md
 │
-├── src/                             # Source code
-│   ├── enums/                       # Enum definitions
+├── policies/                         # Project policies
+│   ├── CODE_OF_CONDUCT.md
+│   ├── REMOTE_WORK_POLICY.md
+│   ├── WORK_HOURS_POLICY.md
+│
+├── src/                              # Source code
+│   ├── enums/                        # Enum definitions
 │   │   ├── index.ts
 │   ├── interfaces/                   # TypeScript interfaces
 │   │   ├── index.ts
-│   ├── models/                        # Data models
+│   ├── models/                       # Data models
 │   │   ├── index.ts
 │   ├── index.ts                      # Main entry point
 │
-├── tests/                           # Unit tests
+├── tests/                            # Unit tests
 │   ├── enums/
 │   │   ├── index.test.ts
 │   ├── interfaces/
@@ -97,16 +102,16 @@ ts-boilerplate/
 │   │   ├── index.test.ts
 │   ├── index.test.ts
 │
-├── .dockerignore                       # Docker ignore files
-├── .gitignore                          # Git ignore files
-├── docker-compose.yml                   # Docker Compose file
-├── Dockerfile                          # Docker build file
-├── jest.config.js                      # Jest configuration
-├── LICENSE                             # License file
-├── package-lock.json                   # NPM lock file
-├── package.json                        # NPM dependencies
-├── README.md                           # Project README
-├── tsconfig.cjs.json                   # CommonJS-specific TS config
-├── tsconfig.esm.json                   # ESM-specific TS config
-├── tsconfig.json                       # TypeScript configuration
+├── .dockerignore                     # Docker ignore files
+├── .gitignore                        # Git ignore files
+├── docker-compose.yml                # Docker Compose file
+├── Dockerfile                        # Docker build file
+├── jest.config.js                    # Jest configuration
+├── LICENSE                           # License file
+├── package-lock.json                 # NPM lock file
+├── package.json                      # NPM dependencies
+├── README.md                         # Project README
+├── tsconfig.cjs.json                 # CommonJS-specific TS config
+├── tsconfig.esm.json                 # ESM-specific TS config
+├── tsconfig.json                     # TypeScript configuration
 ```
