@@ -15,12 +15,12 @@
 #       bash ./.devenv/tools/git/check.sh "2.34.1"
 #
 # ✅ PARAMETERS:
-#   - REQUIRED_VERSION (optional): Expected Git version (default: "latest").
+#   - GIT_REQUIRED_VERSION (optional): Expected Git version (default: "latest").
 #
 # ✅ RETURNS:
-#   - INSTALLED (bool)        : `true` if Git is installed, `false` otherwise.
-#   - VERSION_MATCH (bool)    : `true` if installed version matches required.
-#   - INSTALLED_VERSION (str) : Installed Git version (e.g., "2.34.1").
+#   - GIT_IS_INSTALLED (bool)        : `true` if Git is installed, `false` otherwise.
+#   - GIT_VERSION_MATCH (bool)    : `true` if installed version matches required.
+#   - GIT_INSTALLED_VERSION (str) : Installed Git version (e.g., "2.34.1").
 #
 # ✅ EXPORTS:
 #   These values are exported for use in other scripts.
@@ -32,7 +32,7 @@
 #   # Source from another script
 #   source ./.devenv/tools/git/check.sh
 #   git_check "2.34.1"
-#   echo "Git Installed: $INSTALLED, Version: $INSTALLED_VERSION"
+#   echo "Git Installed: $GIT_IS_INSTALLED, Version: $GIT_INSTALLED_VERSION"
 #
 # --------------------------------------------------------------
 # 🔒 License:
@@ -53,16 +53,16 @@ set -e
 # 🔹 Exports relevant status variables.
 # --------------------------------------------------------------
 # 🛠️ Parameters:
-#   - $1 (optional) → REQUIRED_VERSION (default: "latest")
+#   - $1 (optional) → GIT_REQUIRED_VERSION (default: "latest")
 # --------------------------------------------------------------
 git_check() {
   # Read the required Git version from arguments; default is "latest".
-  local REQUIRED_VERSION=${1:-"latest"}
+  local GIT_REQUIRED_VERSION=${1:-"latest"}
 
   # Define default values for Git status variables.
-  INSTALLED=false        # Is Git installed?
-  VERSION_MATCH=false    # Does Git version match the required version?
-  INSTALLED_VERSION="none"  # Stores the installed Git version.
+  GIT_IS_INSTALLED=false        # Is Git installed?
+  GIT_VERSION_MATCH=false    # Does Git version match the required version?
+  GIT_INSTALLED_VERSION="none"  # Stores the installed Git version.
 
   echo "🔍  Checking Git installation..."
 
@@ -73,25 +73,25 @@ git_check() {
   # ✅ `&>/dev/null`: Suppresses output (used for silent checks).
   # --------------------------------------------------------------
   if command -v git &>/dev/null; then
-    INSTALLED=true  # Git is installed.
+    GIT_IS_INSTALLED=true  # Git is installed.
     
     # Fetch the installed Git version.
     # `git --version` prints something like: "git version 2.34.1"
     # `awk '{print $3}'` extracts the third word (the version number).
-    INSTALLED_VERSION=$(git --version | awk '{print $3}')
+    GIT_INSTALLED_VERSION=$(git --version | awk '{print $3}')
     
-    echo "✅  Git is installed: version $INSTALLED_VERSION"
+    echo "✅  Git is installed: version $GIT_INSTALLED_VERSION"
 
     # --------------------------------------------------------------
     # 🚀 Step 2: Compare Installed Version with Required Version
     # --------------------------------------------------------------
-    # - If REQUIRED_VERSION is "latest", assume it's always valid.
+    # - If GIT_REQUIRED_VERSION is "latest", assume it's always valid.
     # - If installed version matches the required version, mark as matched.
-    if [[ "$REQUIRED_VERSION" == "latest" || "$INSTALLED_VERSION" == "$REQUIRED_VERSION" ]]; then
-      VERSION_MATCH=true
-      echo "✅  Git version matches required version ($REQUIRED_VERSION)."
+    if [[ "$GIT_REQUIRED_VERSION" == "latest" || "$GIT_INSTALLED_VERSION" == "$GIT_REQUIRED_VERSION" ]]; then
+      GIT_VERSION_MATCH=true
+      echo "✅  Git version matches required version ($GIT_REQUIRED_VERSION)."
     else
-      echo "⚠️  Git version mismatch (Installed: $INSTALLED_VERSION, Required: $REQUIRED_VERSION)."
+      echo "⚠️  Git version mismatch (Installed: $GIT_INSTALLED_VERSION, Required: $GIT_REQUIRED_VERSION)."
     fi
   else
     # If Git is not found in the system PATH.
@@ -102,9 +102,10 @@ git_check() {
   # 🚀 Step 3: Export Variables for External Use
   # --------------------------------------------------------------
   # These exported variables can be used by other scripts.
-  export INSTALLED
-  export VERSION_MATCH
-  export INSTALLED_VERSION
+  export GIT_REQUIRED_VERSION
+  export GIT_IS_INSTALLED
+  export GIT_VERSION_MATCH
+  export GIT_INSTALLED_VERSION
 }
 
 # --------------------------------------------------------------
@@ -114,7 +115,8 @@ git_check() {
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   git_check "$1"
   echo "🔍 CLI Test Output:"
-  echo "   - INSTALLED: $INSTALLED"
-  echo "   - VERSION_MATCH: $VERSION_MATCH"
-  echo "   - INSTALLED_VERSION: $INSTALLED_VERSION"
+  echo "   - GIT_REQUIRED_VERSION: $GIT_REQUIRED_VERSION"
+  echo "   - GIT_IS_INSTALLED: $GIT_IS_INSTALLED"
+  echo "   - GIT_VERSION_MATCH: $GIT_VERSION_MATCH"
+  echo "   - GIT_INSTALLED_VERSION: $GIT_INSTALLED_VERSION"
 fi
