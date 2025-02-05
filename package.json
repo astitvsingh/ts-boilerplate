@@ -9,19 +9,31 @@
   "types": "dist/esm/index.d.ts",
   "module": "dist/esm/index.js",
   "scripts": {
-    "build": "npx concurrently 'npm run build:cjs' 'npm run build:esm'",
-    "build:cjs": "npx tsc -p config/tsconfig.cjs.json",
-    "build:esm": "npx tsc -p config/tsconfig.esm.json",
-    "dev": "ts-node --project config/tsconfig.json src/index.ts",
-    "test": "npm run test:jest",
-    "test:jest": "npx jest --config=config/jest.config.js --coverage",
+    "format:check": "npm run format:prettier:check",
+    "format:write": "npm run format:prettier:write",
+    "format:prettier:check": "prettier --config ./configs/.prettierrc.json --ignore-path ./configs/.prettierignore --check .",
+    "format:prettier:write": "prettier --config ./configs/.prettierrc.json --ignore-path ./configs/.prettierignore --write .",
+    "lint": "npm run lint:check",
+    "lint:check": "npx concurrently 'npm run format:check' 'npm run lint:eslint'",
+    "lint:fix": "npx concurrently 'npm run format:write' 'npm run lint:eslint:fix'",
+    "lint:eslint": "eslint --config ./configs/.eslintrc.json --ignore-path ./configs/.eslintignore .",
+    "lint:eslint:fix": "eslint --config ./configs/.eslintrc.json --ignore-path ./configs/.eslintignore --fix .",
+    "build": "npm run build:all",
+    "build:all": "npx concurrently 'npm run build:cjs' 'npm run build:esm'",
+    "build:cjs": "npx tsc -p configs/tsconfig.cjs.json",
+    "build:esm": "npx tsc -p configs/tsconfig.esm.json",
+    "dev": "ts-node --project configs/tsconfig.json src/index.ts",
+    "test": "npm run test:all",
+    "test:all": "npm run test:jest",
+    "test:jest": "npx jest --config=configs/jest.config.js --coverage",
     "docify": "npm run docify:typedoc",
     "docify:typedoc": "npx typedoc --entryPointStrategy expand src --out docs",
-    "clean": "rimraf dist",
-    "docker:build": "docker build -t ts-boilerplate -f config/Dockerfile .",
-    "docker:up": "docker-compose -f config/docker-compose.yml up -d",
-    "docker:down": "docker-compose -f config/docker-compose.yml down",
-    "prepublishOnly": "npm run clean && npm run build && npm run test && npm run docify"
+    "clean": "rimraf dist coverage",
+    "docker:build": "docker build --no-cache -t ts-boilerplate -f configs/Dockerfile .",
+    "docker:up": "docker-compose -f configs/docker-compose.yml up -d",
+    "docker:down": "docker-compose -f configs/docker-compose.yml down",
+    "prepublishOnly": "npm run clean && npm run build:all && npm run test:all && npm run docify",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -34,6 +46,12 @@
   "keywords": [
     "typescript"
   ],
+  "lint-staged": {
+    "**/*.{ts,tsx}": [
+      "npm run format:write",
+      "npm run lint:eslint:fix"
+    ]
+  },
   "exports": {
     ".": {
       "require": "./dist/cjs/index.js",
@@ -57,12 +75,14 @@
     "@types/events": "^3.0.3",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.7.6",
+    "concurrently": "^8.2.2",
+    "husky": "^9.1.7",
     "jest": "^29.7.0",
+    "lint-staged": "^15.4.3",
+    "rimraf": "^5.0.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typedoc": "^0.26.10",
-    "typescript": "^5.6.3",
-    "rimraf": "^5.0.0",
-    "concurrently": "^8.2.2"
+    "typescript": "^5.6.3"
   }
 }
