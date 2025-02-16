@@ -8,19 +8,21 @@
 #
 # ✅ USAGE:
 #   1️⃣ From another script:
-#       source ./.devenv/tools/git/check
-#       git_check "2.47.1"
+#       source "$(dirname "${BASH_SOURCE[0]}")/check"
+#       echo "🔍 Looking for check script at: $(dirname "${BASH_SOURCE[0]}")/check"
+#       git_check ">=2.47.1"
 #
 #   2️⃣ Directly from CLI:
 #       bash ./.devenv/tools/git/check ">=2.47.1"
 #
 # ✅ PARAMETERS:
-#   - GIT_REQUIRED_VERSION (optional): Expected Git version (default: "latest").
+#   - REQUIRED_GIT_VERSION (optional): Expected Git version (default: "latest").
 #
 # ✅ RETURNS:
-#   - GIT_IS_INSTALLED (bool)        : `true` if Git is installed, `false` otherwise.
-#   - GIT_VERSION_MATCH (bool)    : `true` if installed version matches required.
-#   - GIT_INSTALLED_VERSION (str) : Installed Git version (e.g., "2.47.1").
+#   - IS_GIT_INSTALLED (bool)            : `true` if Git is installed, `false` otherwise.
+#   - GIT_VERSION_MATCH (bool)           : `true` if installed version matches required.
+#   - INSTALLED_GIT_VERSION (str)        : Installed Git version (e.g., "2.47.1").
+#   - LATEST_AVAILABLE_GIT_VERSION (str) : The latest available Git version.
 #
 # ✅ EXPORTS:
 #   These values are exported for use in other scripts.
@@ -30,9 +32,10 @@
 #   bash ./.devenv/tools/git/check ">=2.47.1"
 #
 #   # Source from another script
-#   source ./.devenv/tools/git/check
-#   git_check "2.47.1"
-#   echo "Git Installed: $GIT_IS_INSTALLED, Version: $GIT_INSTALLED_VERSION"
+#   source "$(dirname "${BASH_SOURCE[0]}")/check"
+#   echo "🔍 Looking for check script at: $(dirname "${BASH_SOURCE[0]}")/check"
+#   git_check ">=2.47.1"
+#   echo "Git Installed: $IS_GIT_INSTALLED, Version: $INSTALLED_GIT_VERSION"
 #
 # --------------------------------------------------------------
 # 🔒 License:
@@ -50,85 +53,109 @@ set -e
 # --------------------------------------------------------------
 # 🔹 Checks whether Git is installed.
 # 🔹 Determines if its version matches the required version.
+# 🔹 Fetches the latest available Git version.
 # 🔹 Exports relevant status variables.
 # --------------------------------------------------------------
-# 🛠️ Parameters:
-#   - $1 (optional) → GIT_REQUIRED_VERSION (default: "latest")
-# --------------------------------------------------------------
 git_check() {
-  # Read the required Git version from arguments; default is "latest".
-  local GIT_REQUIRED_VERSION=${1:-"latest"}
+  # 🎯 Step 1: Read required Git version from arguments (default: "latest").
+  local REQUIRED_GIT_VERSION=${1:-"latest"}
+  echo "🔄 $(dirname "${BASH_SOURCE[0]}")/check: Step 1: Read required Git version from arguments (default: "latest"): $REQUIRED_GIT_VERSION"
 
-  # Define default values for Git status variables.
-  GIT_IS_INSTALLED=false        # Is Git installed?
-  GIT_VERSION_MATCH=false    # Does Git version match the required version?
-  GIT_INSTALLED_VERSION="none"  # Stores the installed Git version.
+  # 🏷️ Step 2: Define default values for Git status variables.
+  IS_GIT_INSTALLED=false             # ✅ Is Git installed?
+  GIT_VERSION_MATCH=false            # ✅ Does Git version match the required version?
+  INSTALLED_GIT_VERSION="none"       # ✅ Stores the installed Git version.
+  LATEST_AVAILABLE_GIT_VERSION="unknown"  # ✅ Stores the latest available Git version.
+  echo "🔄 $(dirname "${BASH_SOURCE[0]}")/check: Step 2: Define default values for Git status variables"
+  # echo "🔄 Task 2.1: ✅ Is Git installed?: $IS_GIT_INSTALLED"
+  # echo "🔄 Task 2.2: ✅ Does Git version match the required version?: $GIT_VERSION_MATCH"
+  # echo "🔄 Task 2.3: ✅ Stores the installed Git version: $INSTALLED_GIT_VERSION"
+  # echo "🔄 Task 2.4: ✅ Stores the latest available Git version: $LATEST_AVAILABLE_GIT_VERSION"
 
-  echo "🔍  Checking Git installation..."
+  echo "🔍 $(dirname "${BASH_SOURCE[0]}")/check: Step 3: Checking Git installation..."
 
   # --------------------------------------------------------------
-  # 🚀 Step 1: Check if Git is installed using `command -v`
-  # --------------------------------------------------------------
-  # ✅ `command -v git`: Checks if `git` exists in system PATH.
-  # ✅ `&>/dev/null`: Suppresses output (used for silent checks).
+  # 🚀 Step 3: Check if Git is installed
   # --------------------------------------------------------------
   if command -v git &>/dev/null; then
-    GIT_IS_INSTALLED=true  # Git is installed.
-    
-    # Fetch the installed Git version.
-    # `git --version` prints something like: "git version 2.34.1"
-    # `awk '{print $3}'` extracts the third word (the version number).
-    GIT_INSTALLED_VERSION=$(git --version | awk '{print $3}')
-    
-    echo "✅  Git is installed: version $GIT_INSTALLED_VERSION"
+    IS_GIT_INSTALLED=true  # ✅ Git is installed.
+    echo "🔍 $(dirname "${BASH_SOURCE[0]}")/check: Step 4.: Checking Git installation..."
 
-    # 🔍 Step 1: Extract only the numeric part of the installed version (e.g., "2.47.1" from "2.47.1.windows.2")
-    GIT_INSTALLED_VERSION_CLEAN=$(echo "$GIT_INSTALLED_VERSION" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+    # 🏷️ Sub-task 3.1: Fetch the installed Git version.
+    INSTALLED_GIT_VERSION=$(git --version | awk '{print $3}')
+    echo "✅  $(dirname "${BASH_SOURCE[0]}")/check: Git is installed: version $INSTALLED_GIT_VERSION"
 
-    # 🔍 Step 2: Extract only the numeric part of the required version (e.g., "2.47.1" from ">=2.47.1")
-    GIT_REQUIRED_VERSION_CLEAN=$(echo "$GIT_REQUIRED_VERSION" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+    # 🏷️ Sub-task 3.2: Extract only the numeric part of the installed version.
+    GIT_INSTALLED_VERSION_CLEAN=$(echo "$INSTALLED_GIT_VERSION" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+
+    # 🏷️ Sub-task 3.3: Extract only the numeric part of the required version.
+    GIT_REQUIRED_VERSION_CLEAN=$(echo "$REQUIRED_GIT_VERSION" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
 
     # --------------------------------------------------------------
-    # 🚀 Step 2: Compare Installed Version with Required Version
+    # 🚀 Step 4: Fetch the latest available Git version
     # --------------------------------------------------------------
-    # - If GIT_REQUIRED_VERSION is "latest", assume it's always valid.
-    # - If installed version matches the required version, mark as matched.
-    
-    # ✅ If version requirement is "latest", assume it's always valid
-    if [[ "$GIT_REQUIRED_VERSION" == "latest" ]]; then
-      GIT_VERSION_MATCH=true
+    case "$OSTYPE" in
+      linux*)
+        # 🏷️ Sub-task 5.1: Fetch latest version for Linux (APT-based systems)
+        LATEST_AVAILABLE_GIT_VERSION=$(apt-cache policy git | grep Candidate | awk '{print $2}' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+') ;;
+      darwin*)
+        # 🏷️ Sub-task 5.2: Fetch latest version for macOS (Homebrew)
+        LATEST_AVAILABLE_GIT_VERSION=$(brew info git | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' | head -1) ;;
+      msys*|cygwin*)
+        # 🏷️ Sub-task 5.3: Fetch latest version for Windows (Chocolatey)
+        LATEST_AVAILABLE_GIT_VERSION=$(choco search git --exact --limit-output --all | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' | head -1) ;;
+      *)
+        # 🏷️ Sub-task 5.4: Handle unsupported OS
+        LATEST_AVAILABLE_GIT_VERSION="unknown" ;;
+    esac
+
+    echo "🔄 $(dirname "${BASH_SOURCE[0]}")/check: Step 6: Latest Git version available: $LATEST_AVAILABLE_GIT_VERSION"
+
+    # --------------------------------------------------------------
+    # 🚀 Step 7: Compare Installed Version with Required Version
+    # --------------------------------------------------------------
+    echo "🔄 $(dirname "${BASH_SOURCE[0]}")/check: Step 7: Compare Installed Version with Required Version"
+
+    if [[ "$REQUIRED_GIT_VERSION" == "latest" ]]; then
+      # 🏷️ Sub-task 7.1: Compare Installed vs. Latest Available Version
+      if [[ "$(printf "%s\n%s" "$LATEST_AVAILABLE_GIT_VERSION" "$GIT_INSTALLED_VERSION_CLEAN" | sort -V | head -1)" == "$LATEST_AVAILABLE_GIT_VERSION" ]]; then
+        GIT_VERSION_MATCH=true
+        echo "✅  $(dirname "${BASH_SOURCE[0]}")/check: Git is already up-to-date ($GIT_INSTALLED_VERSION_CLEAN)."
+      else
+        echo "⚠️  $(dirname "${BASH_SOURCE[0]}")/check: Installed Git version ($GIT_INSTALLED_VERSION_CLEAN) is outdated. Latest available: $LATEST_AVAILABLE_GIT_VERSION."
+      fi
     else
-      # ✅ Compare Versions Using sort -V
+      # 🏷️ Sub-task 7.2: Compare Installed vs. Required Versions using `sort -V`
       if [[ "$(printf "%s\n%s" "$GIT_REQUIRED_VERSION_CLEAN" "$GIT_INSTALLED_VERSION_CLEAN" | sort -V | head -1)" == "$GIT_REQUIRED_VERSION_CLEAN" ]]; then
         GIT_VERSION_MATCH=true
-        echo "✅  Git version meets or exceeds required version ($GIT_REQUIRED_VERSION_CLEAN)."
+        echo "✅  $(dirname "${BASH_SOURCE[0]}")/check: Git version meets or exceeds required version ($GIT_REQUIRED_VERSION_CLEAN)."
       else
-        echo "⚠️  Git version mismatch (Installed: $GIT_INSTALLED_VERSION_CLEAN, Required: $GIT_REQUIRED_VERSION_CLEAN)."
+        echo "⚠️  $(dirname "${BASH_SOURCE[0]}")/check: Git version mismatch (Installed: $GIT_INSTALLED_VERSION_CLEAN, Required: $GIT_REQUIRED_VERSION_CLEAN)."
       fi
     fi
   else
-    echo "❌  Git is not installed."
+    echo "❌  $(dirname "${BASH_SOURCE[0]}")/check: Git is not installed."
   fi
 
   # --------------------------------------------------------------
-  # 🚀 Step 3: Export Variables for External Use
+  # 🚀 Step 8: Export Variables for External Use
   # --------------------------------------------------------------
-  # These exported variables can be used by other scripts.
-  export GIT_REQUIRED_VERSION
-  export GIT_IS_INSTALLED
+  export REQUIRED_GIT_VERSION
+  export IS_GIT_INSTALLED
   export GIT_VERSION_MATCH
-  export GIT_INSTALLED_VERSION
+  export INSTALLED_GIT_VERSION
+  export LATEST_AVAILABLE_GIT_VERSION
 }
 
 # --------------------------------------------------------------
 # 🛠️ Direct Execution Handling (Allows CLI Usage)
 # --------------------------------------------------------------
-# ✅ If executed directly (not sourced), run `git_check` function.
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
   git_check "$1"
-  echo "🔍  .devenv/tools/git/check Output:"
-  echo "    - GIT_REQUIRED_VERSION: $GIT_REQUIRED_VERSION"
-  echo "    - GIT_IS_INSTALLED: $GIT_IS_INSTALLED"
+  echo -e "\n🔍  .devenv/tools/git/check Output:"
+  echo "    - REQUIRED_GIT_VERSION: $REQUIRED_GIT_VERSION"
+  echo "    - IS_GIT_INSTALLED: $IS_GIT_INSTALLED"
   echo "    - GIT_VERSION_MATCH: $GIT_VERSION_MATCH"
-  echo "    - GIT_INSTALLED_VERSION: $GIT_INSTALLED_VERSION"
+  echo "    - INSTALLED_GIT_VERSION: $INSTALLED_GIT_VERSION"
+  echo "    - LATEST_AVAILABLE_GIT_VERSION: $LATEST_AVAILABLE_GIT_VERSION"
 fi

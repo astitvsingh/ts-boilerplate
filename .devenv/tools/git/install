@@ -8,28 +8,28 @@
 #
 # ✅ USAGE:
 #   1️⃣ From another script:
-#       source ./.devenv/tools/git/install
-#       git_install ">=2.47.1.windows.2"
+#       source "$(dirname "${BASH_SOURCE[0]}")/install"
+#       git_install ">=2.47.1"
 #
 #   2️⃣ Directly from CLI:
-#       bash ./.devenv/tools/git/install ">=2.47.1.windows.2"
+#       bash ./.devenv/tools/git/install ">=2.47.1"
 #
 # ✅ PARAMETERS:
-#   - GIT_REQUIRED_VERSION (optional): Specifies the version to install.
-#     Default: `>=2.47.1.windows.2` (Ensures Windows compatibility).
+#   - REQUIRED_GIT_VERSION (optional): Specifies the version to install.
+#     Default: `>=2.47.1` (Ensures compatibility across OS).
 #
 # ✅ DEPENDENCIES:
-#   - Requires `check.sh` to be sourced beforehand.
+#   - Requires `check` script to be sourced beforehand.
 #
 # ✅ EXPORTS:
 #   - After execution, the newly installed Git version is accessible.
 #
 # ✅ EXAMPLES:
 #   # Test from CLI
-#   bash ./.devenv/tools/git/install.sh ">=2.48.1"
+#   bash ./.devenv/tools/git/install ">=2.48.1"
 #
 #   # Source from another script
-#   source ./.devenv/tools/git/install.sh
+#   source "$(dirname "${BASH_SOURCE[0]}")/install"
 #   git_install ">=2.48.1"
 #
 # --------------------------------------------------------------
@@ -44,10 +44,31 @@
 set -e
 
 # --------------------------------------------------------------
+# 🚀 Step 1: Auto-Elevate Privileges if Needed
+# --------------------------------------------------------------
+
+# 🏷️ Detect if running as root/admin
+if [[ "$OSTYPE" == "linux-gnu"* || "$OSTYPE" == "darwin"* ]]; then
+  if [[ "$EUID" -ne 0 ]]; then
+    echo "🛑 This script must be run as root! Restarting with sudo..."
+    exec sudo bash "$0" "$@"
+  fi
+elif [[ "$OSTYPE" == "msys" || "$OSTYPE" == "cygwin" ]]; then
+  # Check if running as admin in Windows
+  if ! net session &>/dev/null; then
+    echo "🛑 This script must be run as Administrator! Restarting..."
+    # powershell Start-Process -Verb RunAs -FilePath "C:\Program Files\Git\bin\bash.exe" -ArgumentList "'$0 $*'"
+    powershell Start-Process -Verb RunAs -FilePath "\"C:\Program Files\Git\bin\bash.exe\"" -ArgumentList "'$0 $*'" -Wait
+    # powershell Start-Process -Verb RunAs -FilePath "powershell" -ArgumentList "-NoExit", "-Command", "\"C:\Program Files\Git\bin\bash.exe\"" $0 $*'"
+    exit 0
+  fi
+fi
+
+# --------------------------------------------------------------
 # 🚀 Step 1: Load `git_check` to Determine Installation Need
 # --------------------------------------------------------------
 source "$(dirname "${BASH_SOURCE[0]}")/check"
-echo "🔍 Looking for check script at: $(dirname "${BASH_SOURCE[0]}")/check"
+echo "🔍 $(dirname "${BASH_SOURCE[0]}")/install: Looking for check script at: $(dirname "${BASH_SOURCE[0]}")/check"
 
 # --------------------------------------------------------------
 # 🛠️ Function: git_install
@@ -56,63 +77,65 @@ echo "🔍 Looking for check script at: $(dirname "${BASH_SOURCE[0]}")/check"
 # 🔹 Calls `git_check` to determine if installation is necessary.
 # --------------------------------------------------------------
 git_install() {
-  local GIT_REQUIRED_VERSION=${1:-">=2.47.1.windows.2"} # Default requirement
+  # 🎯 Step 2: Read required Git version from arguments (default: ">=2.47.1").
+  local REQUIRED_GIT_VERSION=${1:-">=2.47.1"}
 
-  echo "📥 Preparing to install Git version $GIT_REQUIRED_VERSION..."
+  echo "📥 $(dirname "${BASH_SOURCE[0]}")/install: Step 3: Preparing to install Git version $REQUIRED_GIT_VERSION..."
 
   # --------------------------------------------------------------
-  # 🚀 Step 1: Run `git_check` to Determine Installation Need
+  # 🚀 Step 4: Run `git_check` to Determine Installation Need
   # --------------------------------------------------------------
-  git_check "$GIT_REQUIRED_VERSION"
+  git_check "$REQUIRED_GIT_VERSION"
 
-  # If Git is installed and the version matches, no installation is needed.
-  if [[ "$GIT_IS_INSTALLED" == "true" && "$(printf "%s\n%s" "$GIT_REQUIRED_VERSION" "$GIT_INSTALLED_VERSION" | sort -V | head -1)" == "$GIT_REQUIRED_VERSION" ]]; then
-    echo "✅ Git is already installed and up-to-date."
+  # 🏷️ Sub-task 4.1: If Git is installed and the version matches, no installation is needed.
+  if [[ "$IS_GIT_INSTALLED" == "true" && "$GIT_VERSION_MATCH" == "true" ]]; then
+    echo "✅ $(dirname "${BASH_SOURCE[0]}")/install: Git is already installed and up-to-date."
     return 0
   fi
 
-  echo "📦 Installing Git $GIT_REQUIRED_VERSION..."
+  echo "📦 $(dirname "${BASH_SOURCE[0]}")/install: Step 5: Installing Git $REQUIRED_GIT_VERSION..."
 
   # --------------------------------------------------------------
-  # 🚀 Step 2: Identify the Operating System and Install Git
+  # 🚀 Step 6: Identify the Operating System and Install Git
   # --------------------------------------------------------------
-  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    sudo apt update
-    if [[ "$GIT_REQUIRED_VERSION" == "latest" ]]; then
-      sudo apt install -y git
-    else
-      sudo apt install -y git="$GIT_REQUIRED_VERSION"
-    fi
+  case "$OSTYPE" in
+    linux*)
+      sudo apt update
+      if [[ "$REQUIRED_GIT_VERSION" == "latest" ]]; then
+        sudo apt install -y git
+      else
+        sudo apt install -y git="$REQUIRED_GIT_VERSION"
+      fi ;;
+      
+    darwin*)
+      brew update
+      if [[ "$REQUIRED_GIT_VERSION" == "latest" ]]; then
+        brew install git
+      else
+        brew install git@"$REQUIRED_GIT_VERSION"
+      fi ;;
 
-  elif [[ "$OSTYPE" == "darwin"* ]]; then
-    brew update
-    if [[ "$GIT_REQUIRED_VERSION" == "latest" ]]; then
-      brew install git
-    else
-      brew install git@"$GIT_REQUIRED_VERSION"
-    fi
+    msys*|cygwin*)
+      if [[ "$REQUIRED_GIT_VERSION" == "latest" ]]; then
+        choco install git -y
+      else
+        choco install git --version="$REQUIRED_GIT_VERSION" -y
+      fi ;;
 
-  elif [[ "$OSTYPE" == "msys" ]]; then
-    if [[ "$GIT_REQUIRED_VERSION" == "latest" ]]; then
-      choco install git
-    else
-      choco install git --version="$GIT_REQUIRED_VERSION"
-    fi
-
-  else
-    echo "⚠️ Unsupported OS. Please install Git manually."
-    return 1
-  fi
+    *)
+      echo "⚠️ $(dirname "${BASH_SOURCE[0]}")/install: Unsupported OS. Please install Git manually."
+      return 1 ;;
+  esac
 
   # --------------------------------------------------------------
-  # 🚀 Step 3: Verify Installation & Export New Version
+  # 🚀 Step 7: Verify Installation & Export New Version
   # --------------------------------------------------------------
   if command -v git &>/dev/null; then
-    GIT_INSTALLED_VERSION=$(git --version | awk '{print $3}')
-    echo "✅ Git successfully installed: version $GIT_INSTALLED_VERSION"
-    export GIT_INSTALLED_VERSION
+    INSTALLED_GIT_VERSION=$(git --version | awk '{print $3}')
+    echo "✅ $(dirname "${BASH_SOURCE[0]}")/install: Git successfully installed: version $INSTALLED_GIT_VERSION"
+    export INSTALLED_GIT_VERSION
   else
-    echo "❌ Git installation failed. Please try manually."
+    echo "❌ $(dirname "${BASH_SOURCE[0]}")/install: Git installation failed. Please try manually."
     return 1
   fi
 }
@@ -121,10 +144,10 @@ git_install() {
 # 🛠️ Direct Execution Handling (Allows CLI Usage)
 # --------------------------------------------------------------
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
-  GIT_REQUIRED_VERSION=${1:-">=2.47.1.windows.2"}
-  git_install "$GIT_REQUIRED_VERSION"
+  REQUIRED_GIT_VERSION=${1:-">=2.47.1"}
+  git_install "$REQUIRED_GIT_VERSION"
 
-  echo -e "\n🔍 CLI Test Output:"
-  echo "   - GIT_REQUIRED_VERSION: $GIT_REQUIRED_VERSION"
-  echo "   - GIT_INSTALLED_VERSION: $GIT_INSTALLED_VERSION"
+  echo -e "\n🔍  .devenv/tools/git/install Output:"
+  echo "    - REQUIRED_GIT_VERSION: $REQUIRED_GIT_VERSION"
+  echo "    - INSTALLED_GIT_VERSION: $INSTALLED_GIT_VERSION"
 fi
